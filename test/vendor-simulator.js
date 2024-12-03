@@ -30,4 +30,4 @@ server.on('session', (session) => {
   });
 });
 
-console.log(`Vendor simulator started on port ${port}`); 
+console.log(`Vendor simulator started on port ${port}`);

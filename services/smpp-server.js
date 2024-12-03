@@ -62,7 +62,7 @@ class SmppServer {
 
         session.on('submit_sm', async (pdu) => {
           const ourMessageId = uuidv4();
-          
+
           // Send immediate response with our message ID
           session.send(pdu.response({ message_id: ourMessageId }));
 
@@ -82,7 +82,6 @@ class SmppServer {
             connectionId: connectionId
           });
         });
-
       } catch (error) {
         console.error('Error in bind_transceiver:', error);
         session.send(pdu.response({ command_status: smpp.ESME_RSYSERR }));
@@ -117,12 +116,14 @@ class SmppServer {
     }
 
     // Try to use the original connection or any available connection
-    const session = clientSessions.get(messageDetails.connectionId) || 
-                   Array.from(clientSessions.values())[0];
+    const session =
+      clientSessions.get(messageDetails.connectionId) ||
+      Array.from(clientSessions.values())[0];
 
     if (session) {
       const currentDate = new Date();
-      const formattedDate = currentDate.toISOString()
+      const formattedDate = currentDate
+        .toISOString()
         .replace(/[-T:.Z]/g, '')
         .slice(0, 12); // YYMMDDHHmmss
 
@@ -136,11 +137,19 @@ class SmppServer {
       });
 
       // Clean up message mapping if final status
-      if (['DELIVERED', 'EXPIRED', 'DELETED', 'UNDELIVERABLE', 'REJECTED'].includes(status)) {
+      if (
+        [
+          'DELIVERED',
+          'EXPIRED',
+          'DELETED',
+          'UNDELIVERABLE',
+          'REJECTED'
+        ].includes(status)
+      ) {
         this.messageMap.delete(ourMessageId);
       }
     }
   }
 }
 
-module.exports = new SmppServer(); 
+module.exports = new SmppServer();

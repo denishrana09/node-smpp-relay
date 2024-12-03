@@ -13,7 +13,7 @@ async function seed() {
       ip: '127.0.0.1',
       port: 2775,
       maxConnections: 5,
-      messagePrice: 1.0,
+      messagePrice: 1.0
     },
     {
       id: 'client2',
@@ -22,7 +22,7 @@ async function seed() {
       ip: '127.0.0.1',
       port: 2775,
       maxConnections: 5,
-      messagePrice: 1.2,
+      messagePrice: 1.2
     },
     {
       id: 'client3',
@@ -31,8 +31,8 @@ async function seed() {
       ip: '127.0.0.1',
       port: 2775,
       maxConnections: 5,
-      messagePrice: 1.1,
-    },
+      messagePrice: 1.1
+    }
   ]);
 
   await Vendor.bulkCreate([
@@ -42,7 +42,7 @@ async function seed() {
       password: 'password1',
       host: 'localhost',
       port: 2776,
-      messagePrice: 0.5,
+      messagePrice: 0.5
     },
     {
       id: 'vendor2',
@@ -50,7 +50,7 @@ async function seed() {
       password: 'password2',
       host: 'localhost',
       port: 2777,
-      messagePrice: 0.6,
+      messagePrice: 0.6
     },
     {
       id: 'vendor3',
@@ -58,12 +58,12 @@ async function seed() {
       password: 'password3',
       host: 'localhost',
       port: 2778,
-      messagePrice: 0.7,
-    },
+      messagePrice: 0.7
+    }
   ]);
 
   console.log('Seeding completed');
-  
+
   // Only exit if running directly
   if (require.main === module) {
     process.exit(0);

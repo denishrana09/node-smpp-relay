@@ -20,4 +20,4 @@ async function sendMessage(topic, message) {
 
 init().catch(console.error);
 
-module.exports = { sendMessage }; 
+module.exports = { sendMessage };

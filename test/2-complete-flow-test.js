@@ -16,16 +16,19 @@ async function testCompleteFlow() {
   try {
     // Bind as transceiver
     await new Promise((resolve, reject) => {
-      session.bind_transceiver({
-        system_id: 'client1',
-        password: 'password1'
-      }, (pdu) => {
-        if (pdu.command_status === 0) {
-          resolve();
-        } else {
-          reject(new Error('Bind failed'));
+      session.bind_transceiver(
+        {
+          system_id: 'client1',
+          password: 'password1'
+        },
+        (pdu) => {
+          if (pdu.command_status === 0) {
+            resolve();
+          } else {
+            reject(new Error('Bind failed'));
+          }
         }
-      });
+      );
     });
 
     console.log('Successfully bound to server');
@@ -39,28 +42,31 @@ async function testCompleteFlow() {
     // Send test messages
     for (let i = 0; i < 5; i++) {
       await new Promise((resolve) => {
-        session.submit_sm({
-          source_addr: 'TEST',
-          destination_addr: `1234567${i}`,
-          short_message: `Test message ${i}`,
-          registered_delivery: 1
-        }, (pdu) => {
-          console.log(`Message ${i} sent:`, pdu);
-          resolve();
-        });
+        session.submit_sm(
+          {
+            source_addr: 'TEST',
+            destination_addr: `1234567${i}`,
+            short_message: `Test message ${i}`,
+            registered_delivery: 1
+          },
+          (pdu) => {
+            console.log(`Message ${i} sent:`, pdu);
+            resolve();
+          }
+        );
       });
 
       // Wait a bit between messages
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
     // Wait for delivery reports
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
     // Check database for messages with error handling and debugging
     try {
       const messages = await Message.findAll({
-        raw: true  // Get plain objects instead of Sequelize instances
+        raw: true // Get plain objects instead of Sequelize instances
       });
       console.log('Query completed. Number of messages:', messages.length);
       if (messages.length === 0) {
@@ -74,7 +80,6 @@ async function testCompleteFlow() {
     } catch (dbError) {
       console.error('Database query failed:', dbError);
     }
-
   } catch (error) {
     console.error('Test failed:', error);
   } finally {
@@ -88,4 +93,4 @@ testCompleteFlow()
   .finally(async () => {
     // Close database connection when done
     await sequelize.close();
-  }); 
+  });

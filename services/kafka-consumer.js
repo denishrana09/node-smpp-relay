@@ -7,7 +7,9 @@ const kafka = new Kafka({
   brokers: (process.env.KAFKA_BROKERS || 'localhost:9092').split(',')
 });
 
-const consumer = kafka.consumer({ groupId: process.env.KAFKA_CONSUMER_GROUP_ID || 'smpp-gateway-group' });
+const consumer = kafka.consumer({
+  groupId: process.env.KAFKA_CONSUMER_GROUP_ID || 'smpp-gateway-group'
+});
 
 // Keep track of round-robin counters for each client
 const roundRobinCounters = new Map();
@@ -24,10 +26,13 @@ function selectVendor(clientConfig) {
 
     const counter = roundRobinCounters.get(clientConfig.id);
     const vendor = clientConfig.vendors[counter % clientConfig.vendors.length];
-    
+
     // Update counter
-    roundRobinCounters.set(clientConfig.id, (counter + 1) % clientConfig.vendors.length);
-    
+    roundRobinCounters.set(
+      clientConfig.id,
+      (counter + 1) % clientConfig.vendors.length
+    );
+
     return vendor;
   }
 }
@@ -40,9 +45,12 @@ async function init() {
     eachMessage: async ({ message }) => {
       const data = JSON.parse(message.value.toString());
       const clientConfig = routes.clients[data.clientId];
-      
+
       if (!clientConfig) {
-        console.error('No routing configuration found for client:', data.clientId);
+        console.error(
+          'No routing configuration found for client:',
+          data.clientId
+        );
         return;
       }
 
@@ -65,4 +73,4 @@ async function init() {
   });
 }
 
-init().catch(console.error); 
+init().catch(console.error);

@@ -22,23 +22,32 @@ class TestClient {
 
       // Set up delivery report handler
       session.on('deliver_sm', (pdu) => {
-        console.log(`[${this.systemId}] Received delivery report:`, pdu.short_message.message);
-        this.deliveryReports.set(this.parseMessageId(pdu.short_message.message), pdu.short_message.message);
+        console.log(
+          `[${this.systemId}] Received delivery report:`,
+          pdu.short_message.message
+        );
+        this.deliveryReports.set(
+          this.parseMessageId(pdu.short_message.message),
+          pdu.short_message.message
+        );
         session.send(pdu.response());
       });
 
       try {
         await new Promise((resolve, reject) => {
-          session.bind_transceiver({
-            system_id: this.systemId,
-            password: this.password
-          }, (pdu) => {
-            if (pdu.command_status === 0) {
-              resolve();
-            } else {
-              reject(new Error(`Bind failed for ${this.systemId}`));
+          session.bind_transceiver(
+            {
+              system_id: this.systemId,
+              password: this.password
+            },
+            (pdu) => {
+              if (pdu.command_status === 0) {
+                resolve();
+              } else {
+                reject(new Error(`Bind failed for ${this.systemId}`));
+              }
             }
-          });
+          );
         });
 
         this.sessions.set(sessionId, session);
@@ -60,19 +69,22 @@ class TestClient {
     this.messagesSent++;
 
     return new Promise((resolve, reject) => {
-      session.submit_sm({
-        source_addr: this.systemId,
-        destination_addr: destination,
-        short_message: text,
-        registered_delivery: 1
-      }, (pdu) => {
-        if (pdu.command_status === 0) {
-          console.log(`[${this.systemId}] Message sent, ID:`, pdu.message_id);
-          resolve(pdu.message_id);
-        } else {
-          reject(new Error('Message send failed'));
+      session.submit_sm(
+        {
+          source_addr: this.systemId,
+          destination_addr: destination,
+          short_message: text,
+          registered_delivery: 1
+        },
+        (pdu) => {
+          if (pdu.command_status === 0) {
+            console.log(`[${this.systemId}] Message sent, ID:`, pdu.message_id);
+            resolve(pdu.message_id);
+          } else {
+            reject(new Error('Message send failed'));
+          }
         }
-      });
+      );
     });
   }
 
@@ -83,7 +95,7 @@ class TestClient {
 
   async close() {
     for (const [sessionId, session] of this.sessions) {
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         session.unbind();
         session.on('close', resolve);
       });
@@ -104,7 +116,7 @@ async function runTest() {
     await client2.connect(2); // Try to create 2 connections
 
     // Wait a bit for connections to stabilize
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Send test messages from both clients
     console.log('\nSending test messages...');
@@ -125,9 +137,9 @@ async function runTest() {
       try {
         await client1.sendMessage(`C1-${message}-${i}`, destination);
         await client2.sendMessage(`C2-${message}-${i}`, destination);
-        
+
         // Small delay between messages
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise((resolve) => setTimeout(resolve, 200));
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -135,7 +147,7 @@ async function runTest() {
 
     // Wait for delivery reports
     console.log('\nWaiting for delivery reports...');
-    await new Promise(resolve => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     // Print delivery report statistics
     console.log('\nDelivery Report Statistics:');
@@ -145,7 +157,6 @@ async function runTest() {
     // Close connections
     await client1.close();
     await client2.close();
-
   } catch (error) {
     console.error('Test failed:', error);
   }
@@ -153,6 +164,8 @@ async function runTest() {
 
 // Run the test
 console.log('Starting comprehensive test...');
-runTest().then(() => {
-  console.log('Test completed');
-}).catch(console.error); 
+runTest()
+  .then(() => {
+    console.log('Test completed');
+  })
+  .catch(console.error);

@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "seed": "node seeders/initial-data.js"
+    "seed": "node seeders/initial-data.js",
+    "format": "prettier --write .",
+    "format-check": "prettier --check ."
   },
   "dependencies": {
     "dotenv": "^16.4.5",
@@ -15,5 +17,8 @@
     "smpp": "^0.6.0-rc.4",
     "sqlite3": "^5.0.2",
     "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.1"
   }
 }

@@ -24,12 +24,12 @@ const topics = [
 async function createTopics() {
   try {
     await admin.connect();
-    
+
     // Check if topics exist
     const existingTopics = await admin.listTopics();
-    
+
     const topicsToCreate = topics.filter(
-      topic => !existingTopics.includes(topic.topic)
+      (topic) => !existingTopics.includes(topic.topic)
     );
 
     if (topicsToCreate.length > 0) {
@@ -39,7 +39,6 @@ async function createTopics() {
       });
       console.log('Kafka topics created successfully');
     }
-
   } catch (error) {
     console.error('Error creating Kafka topics:', error);
     throw error;
@@ -48,4 +47,4 @@ async function createTopics() {
   }
 }
 
-module.exports = { createTopics }; 
+module.exports = { createTopics };

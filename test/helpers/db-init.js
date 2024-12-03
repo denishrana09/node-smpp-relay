@@ -1,17 +1,17 @@
 const sequelize = require('../../config/database');
-const Message = require('../../models/message');
-const Client = require('../../models/client');
-const Vendor = require('../../models/vendor');
+// const Message = require('../../models/message');
+// const Client = require('../../models/client');
+// const Vendor = require('../../models/vendor');
 
 async function initializeDatabase() {
   try {
-    // Sync all models
-    await sequelize.sync({ force: true }); // Use force: true to recreate tables
+    // Initialize database
+    await sequelize.sync();
 
     // Clear existing data
-    await Message.destroy({ truncate: true });
-    await Client.destroy({ truncate: true });
-    await Vendor.destroy({ truncate: true });
+    // await Message.destroy({ truncate: true });
+    // await Client.destroy({ truncate: true });
+    // await Vendor.destroy({ truncate: true });
 
     console.log('Database initialized successfully');
   } catch (error) {
@@ -23,4 +23,4 @@ async function initializeDatabase() {
 module.exports = {
   initializeDatabase,
   sequelize
-}; 
+};

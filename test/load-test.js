@@ -5,4 +5,4 @@ async function sendBulkMessages(count) {
   // Monitor system performance
 }
 
-sendBulkMessages(1000); // Send 1000 messages 
+sendBulkMessages(1000); // Send 1000 messages

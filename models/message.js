@@ -18,4 +18,4 @@ const Message = sequelize.define('Message', {
   direction: DataTypes.ENUM('MO', 'MT')
 });
 
-module.exports = Message; 
+module.exports = Message;

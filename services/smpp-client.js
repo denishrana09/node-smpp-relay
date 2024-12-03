@@ -22,7 +22,7 @@ class SmppClient {
 
     const session = new smpp.Session({
       host: vendor.host,
-      port: vendor.port,
+      port: vendor.port
     });
 
     try {
@@ -33,7 +33,7 @@ class SmppClient {
         session.bind_transceiver(
           {
             system_id: vendor.systemId,
-            password: vendor.password,
+            password: vendor.password
           },
           (pdu) => {
             if (pdu.command_status === 0) {
@@ -50,7 +50,6 @@ class SmppClient {
 
       // Clear reconnection state if successful
       this.reconnectAttempts.delete(vendorId);
-
     } catch (error) {
       console.error(`Failed to connect to vendor ${vendorId}:`, error);
       this.scheduleReconnect(vendorId, vendor);
@@ -97,18 +96,21 @@ class SmppClient {
 
     try {
       const vendorMessageId = await new Promise((resolve, reject) => {
-        session.submit_sm({
-          source_addr: message.source,
-          destination_addr: message.destination,
-          short_message: message.content,
-          registered_delivery: 1
-        }, (pdu) => {
-          if (pdu.command_status === 0) {
-            resolve(pdu.message_id);
-          } else {
-            reject(new Error('Message send failed'));
+        session.submit_sm(
+          {
+            source_addr: message.source,
+            destination_addr: message.destination,
+            short_message: message.content,
+            registered_delivery: 1
+          },
+          (pdu) => {
+            if (pdu.command_status === 0) {
+              resolve(pdu.message_id);
+            } else {
+              reject(new Error('Message send failed'));
+            }
           }
-        });
+        );
       });
 
       // Store message in database with both IDs
@@ -140,14 +142,19 @@ class SmppClient {
 
   async handleDeliveryReport(vendorId, pdu) {
     try {
-      const deliveryReceipt = this.parseDeliveryReceipt(pdu.short_message.message);
-      const vendorMessageId = deliveryReceipt.id;
+      const deliveryReceipt = this.parseDeliveryReceipt(
+        pdu.short_message.message
+      );
+      const vendorMessageId = pdu.receipted_message_id || deliveryReceipt.id;
       const status = deliveryReceipt.stat;
 
       // Get our message details from vendor message ID mapping
       const messageDetails = this.messageMap.get(vendorMessageId);
       if (!messageDetails) {
-        console.error('Message details not found for vendor ID:', vendorMessageId);
+        console.error(
+          'Message details not found for vendor ID:',
+          vendorMessageId
+        );
         return;
       }
 
@@ -180,7 +187,15 @@ class SmppClient {
       );
 
       // Clean up message mapping if final status
-      if (['DELIVERED', 'EXPIRED', 'DELETED', 'UNDELIVERABLE', 'REJECTED'].includes(status)) {
+      if (
+        [
+          'DELIVERED',
+          'EXPIRED',
+          'DELETED',
+          'UNDELIVERABLE',
+          'REJECTED'
+        ].includes(status)
+      ) {
         this.messageMap.delete(vendorMessageId);
       }
     } catch (error) {

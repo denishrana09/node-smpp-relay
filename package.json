@@ -1,0 +1,19 @@
+{
+  "name": "smpp-gateway",
+  "version": "1.0.0",
+  "description": "SMPP Gateway Service",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "seed": "node seeders/initial-data.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.17.1",
+    "kafkajs": "^2.1.0",
+    "sequelize": "^6.6.5",
+    "smpp": "^0.6.0-rc.4",
+    "sqlite3": "^5.0.2",
+    "winston": "^3.3.3"
+  }
+}

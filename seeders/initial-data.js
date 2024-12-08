@@ -1,67 +1,78 @@
+const { v4: uuidv4 } = require('uuid');
+const { Vendor, VendorHost } = require('../models/vendor');
 const Client = require('../models/client');
-const Vendor = require('../models/vendor');
 const sequelize = require('../config/database');
 
-async function seed() {
+async function seedData() {
   await sequelize.sync({ force: true });
+  // Create vendors
+  const vendor1 = await Vendor.create({
+    id: 'vendor1',
+    systemId: 'vendor1',
+    password: 'password1',
+    messagePrice: 1.0
+  });
 
+  const vendor2 = await Vendor.create({
+    id: 'vendor2',
+    systemId: 'vendor2',
+    password: 'password2',
+    messagePrice: 1.5
+  });
+
+  // Create multiple hosts for each vendor
+  await VendorHost.bulkCreate([
+    {
+      id: uuidv4(),
+      vendorId: 'vendor1',
+      host: 'localhost',
+      port: 2776,
+      priority: 1,
+      isActive: true
+    },
+    {
+      id: uuidv4(),
+      vendorId: 'vendor1',
+      host: 'localhost',
+      port: 2777,
+      priority: 2,
+      isActive: true
+    },
+    {
+      id: uuidv4(),
+      vendorId: 'vendor2',
+      host: 'localhost',
+      port: 2778,
+      priority: 1,
+      isActive: true
+    },
+    {
+      id: uuidv4(),
+      vendorId: 'vendor2',
+      host: 'localhost',
+      port: 2770,
+      priority: 2,
+      isActive: true
+    }
+  ]);
+
+  // Create clients with different routing strategies
   await Client.bulkCreate([
     {
       id: 'client1',
       systemId: 'client1',
       password: 'password1',
-      ip: '127.0.0.1',
-      port: 2775,
-      maxConnections: 5,
-      messagePrice: 1.0
+      maxConnections: 2,
+      routingStrategy: 'priority'
     },
     {
       id: 'client2',
       systemId: 'client2',
       password: 'password2',
-      ip: '127.0.0.1',
-      port: 2775,
-      maxConnections: 5,
-      messagePrice: 1.2
-    },
-    {
-      id: 'client3',
-      systemId: 'client3',
-      password: 'password3',
-      ip: '127.0.0.1',
-      port: 2775,
-      maxConnections: 5,
-      messagePrice: 1.1
+      maxConnections: 2,
+      routingStrategy: 'round-robin'
     }
   ]);
-
-  await Vendor.bulkCreate([
-    {
-      id: 'vendor1',
-      systemId: 'vendor1',
-      password: 'password1',
-      host: 'localhost',
-      port: 2776,
-      messagePrice: 0.5
-    },
-    {
-      id: 'vendor2',
-      systemId: 'vendor2',
-      password: 'password2',
-      host: 'localhost',
-      port: 2777,
-      messagePrice: 0.6
-    },
-    {
-      id: 'vendor3',
-      systemId: 'vendor3',
-      password: 'password3',
-      host: 'localhost',
-      port: 2778,
-      messagePrice: 0.7
-    }
-  ]);
-
   console.log('Seeding completed');
 
   // Only exit if running directly
@@ -72,8 +83,7 @@ async function seed() {
 
 // For command line execution
 if (require.main === module) {
-  seed().catch(console.error);
+  seedData().catch(console.error);
 }
 
-// For programmatic use
-module.exports = { seed };
+module.exports = seedData;

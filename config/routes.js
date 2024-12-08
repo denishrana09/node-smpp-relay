@@ -1,6 +1,8 @@
 module.exports = {
   clients: {
     client1: {
+      id: 'client1',
+      routingStrategy: 'priority',
       vendors: [
         {
           id: 'vendor1',
@@ -10,42 +12,19 @@ module.exports = {
           id: 'vendor2',
           priority: 2
         }
-      ],
-      routingStrategy: 'priority'
+      ]
     },
     client2: {
+      id: 'client2',
+      routingStrategy: 'round-robin',
       vendors: [
         {
-          id: 'vendor1',
-          priority: 1
+          id: 'vendor1'
         },
         {
-          id: 'vendor3',
-          priority: 2
-        },
-        {
-          id: 'vendor2',
-          priority: 3
+          id: 'vendor2'
         }
-      ],
-      routingStrategy: 'priority'
-    },
-    client3: {
-      vendors: [
-        {
-          id: 'vendor1',
-          priority: 1
-        },
-        {
-          id: 'vendor2',
-          priority: 1
-        },
-        {
-          id: 'vendor3',
-          priority: 1
-        }
-      ],
-      routingStrategy: 'round-robin'
+      ]
     }
   }
 };

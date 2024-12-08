@@ -11,9 +11,11 @@ const Client = sequelize.define('Client', {
     unique: true
   },
   password: DataTypes.STRING,
-  ip: DataTypes.STRING,
-  port: DataTypes.INTEGER,
   maxConnections: DataTypes.INTEGER,
+  routingStrategy: {
+    type: DataTypes.ENUM('priority', 'round-robin'),
+    defaultValue: 'priority'
+  },
   messagePrice: DataTypes.FLOAT
 });
 

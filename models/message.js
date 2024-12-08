@@ -9,6 +9,7 @@ const Message = sequelize.define('Message', {
   },
   clientId: DataTypes.STRING,
   vendorId: DataTypes.STRING,
+  hostId: DataTypes.STRING,
   messageId: DataTypes.STRING,
   vendorMessageId: DataTypes.STRING,
   source: DataTypes.STRING,
